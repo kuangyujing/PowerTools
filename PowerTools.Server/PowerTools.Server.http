@@ -1,0 +1,6 @@
+@PowerTools.Server_HostAddress = http://localhost:5182
+
+GET {{PowerTools.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
