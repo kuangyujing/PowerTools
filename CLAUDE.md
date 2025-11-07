@@ -8,6 +8,16 @@ PowerTools is a .NET 8 ASP.NET Core Web API solution for Power Platform tools an
 - **PowerTools.Server**: Main ASP.NET Core Web API project with Swagger/OpenAPI support
 - **PowerTools.Tests**: xUnit test project
 
+### Project Philosophy
+
+Power Platform emphasizes low-code development, which offers rapid application development but comes at the cost of flexibility that full-code solutions provide. PowerTools addresses this limitation by serving as a **Swiss Army knife for Power Platform** - providing a collection of lightweight, single-purpose APIs that extend Power Platform's capabilities.
+
+Each API is designed to:
+- Focus on a single, well-defined function
+- Be lightweight and performant
+- Seamlessly integrate with Power Platform flows and apps
+- Fill gaps where Power Platform's low-code approach falls short
+
 ## Commands
 
 ### Build
