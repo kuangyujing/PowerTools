@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerTools.Server", "PowerTools.Server\PowerTools.Server.csproj", "{E3BF6A56-E055-407B-9074-95B73E1F38D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerTools.Server", "PowerTools.Server\PowerTools.Server.csproj", "{CFF451DC-F47C-4E87-8449-EF7743D286A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerTools.Tests", "PowerTools.Tests\PowerTools.Tests.csproj", "{6A1C033F-4D0D-4926-99CF-80AA0D0E42CC}"
 EndProject
@@ -16,10 +16,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E3BF6A56-E055-407B-9074-95B73E1F38D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3BF6A56-E055-407B-9074-95B73E1F38D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3BF6A56-E055-407B-9074-95B73E1F38D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3BF6A56-E055-407B-9074-95B73E1F38D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFF451DC-F47C-4E87-8449-EF7743D286A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFF451DC-F47C-4E87-8449-EF7743D286A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFF451DC-F47C-4E87-8449-EF7743D286A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFF451DC-F47C-4E87-8449-EF7743D286A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A1C033F-4D0D-4926-99CF-80AA0D0E42CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A1C033F-4D0D-4926-99CF-80AA0D0E42CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A1C033F-4D0D-4926-99CF-80AA0D0E42CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
