@@ -68,7 +68,7 @@ dotnet restore
 
 ### Technology Stack
 - **.NET 8**: Target framework for both projects
-- **ASP.NET Core**: Web API framework with minimal API pattern
+- **ASP.NET Core**: Web API framework with Controller-based architecture
 - **Swagger/OpenAPI**: API documentation via Swashbuckle
 - **xUnit**: Testing framework with test project referencing the server project
 
@@ -76,11 +76,23 @@ dotnet restore
 The solution follows standard .NET project organization:
 - Solution file (`.sln`) at root manages both projects
 - Server project configured as Web SDK with OpenAPI/Swagger packages
+- Controllers located in `PowerTools.Server/Controllers/` directory
+- Models located in `PowerTools.Server/` directory root
 - Test project configured with xUnit and references the server project for integration testing
-- Minimal API pattern in `Program.cs` with inline endpoint definitions
 
 ### Key Implementation Details
-- The server currently implements a sample weather forecast endpoint demonstrating minimal API pattern
-- Swagger UI is enabled in development environment for API exploration
-- HTTPS redirection is configured by default
+- The server uses Controller-based architecture with `AddControllers()` and `MapControllers()` in `Program.cs`
+- Controllers inherit from `ControllerBase` and use standard `[ApiController]` and `[Route]` attributes
+- Sample `WeatherForecastController` demonstrates the Controller pattern with dependency injection
+- Swagger UI is enabled in development environment for API exploration at `/swagger`
+- HTTPS redirection and authorization middleware are configured by default
 - Test project is set up with xUnit and code coverage collection support via coverlet
+
+### Adding New APIs
+When adding new APIs to PowerTools:
+1. Create a new Controller class in `PowerTools.Server/Controllers/`
+2. Inherit from `ControllerBase` and add `[ApiController]` attribute
+3. Define route using `[Route("[controller]")]` or custom route
+4. Create model classes as needed in the appropriate namespace
+5. Implement action methods with appropriate HTTP verb attributes (`[HttpGet]`, `[HttpPost]`, etc.)
+6. Follow the single-purpose API principle - each controller should focus on one specific utility function
