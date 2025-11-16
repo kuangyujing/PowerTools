@@ -1,6 +1,13 @@
+using System.Text;
+using PowerTools.Server.Services;
+
+// Register code pages encoding provider for Shift_JIS, EUC-JP, etc.
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<EncodingDetectionService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
