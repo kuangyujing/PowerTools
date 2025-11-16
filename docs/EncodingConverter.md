@@ -1,152 +1,152 @@
-# File Encoding Converter API - Power Platform Integration Guide
+# ファイルエンコーディング変換API - Power Platform統合ガイド
 
-This guide explains how to use the File Encoding Converter API from Power Apps and Power Automate via custom connectors.
+このガイドでは、Power AppsとPower Automateからカスタムコネクタ経由でファイルエンコーディング変換APIを使用する方法を説明します。
 
-## Table of Contents
-- [API Overview](#api-overview)
-- [Custom Connector Setup](#custom-connector-setup)
-- [Power Apps Implementation](#power-apps-implementation)
-- [Power Automate Implementation](#power-automate-implementation)
-- [API Reference](#api-reference)
-
----
-
-## API Overview
-
-The Encoding Converter API converts text files from one character encoding to another. It supports:
-- **Automatic encoding detection** when input encoding is not specified
-- **Base64-based file transfer** (compatible with Power Platform custom connectors)
-- **Multiple encodings**: UTF-8, Shift_JIS, EUC-JP, ISO-2022-JP, and more
-
-### Key Features
-- Works with any plain text file (CSV, TXT, JSON, XML, HTML, etc.)
-- Auto-detects input encoding using statistical analysis and BOM detection
-- Returns converted file in the same format with specified encoding
-- Includes confidence score for auto-detection results
+## 目次
+- [APIの概要](#apiの概要)
+- [カスタムコネクタのセットアップ](#カスタムコネクタのセットアップ)
+- [Power Appsでの実装](#power-appsでの実装)
+- [Power Automateでの実装](#power-automateでの実装)
+- [APIリファレンス](#apiリファレンス)
 
 ---
 
-## Custom Connector Setup
+## APIの概要
 
-### Step 1: Export OpenAPI Definition
+エンコーディング変換APIは、テキストファイルの文字エンコーディングを別のエンコーディングに変換します。以下の機能をサポートしています：
+- **自動エンコーディング検出** - 入力エンコーディングが指定されていない場合
+- **Base64ベースのファイル転送** - Power Platformカスタムコネクタと互換性あり
+- **複数のエンコーディング対応** - UTF-8、Shift_JIS、EUC-JP、ISO-2022-JPなど
 
-1. Run the PowerTools API locally:
+### 主な機能
+- 任意のプレーンテキストファイル（CSV、TXT、JSON、XML、HTMLなど）に対応
+- 統計分析とBOM検出による自動エンコーディング検出
+- 指定されたエンコーディングで同じフォーマットの変換済みファイルを返却
+- 自動検出結果の信頼度スコアを提供
+
+---
+
+## カスタムコネクタのセットアップ
+
+### ステップ1: OpenAPI定義のエクスポート
+
+1. PowerTools APIをローカルで実行します：
    ```bash
    dotnet run --project PowerTools.Server
    ```
 
-2. Navigate to the Swagger UI:
+2. Swagger UIにアクセスします：
    ```
    https://localhost:7XXX/swagger
    ```
 
-3. Download the OpenAPI JSON definition:
+3. OpenAPI JSON定義をダウンロードします：
    ```
    https://localhost:7XXX/swagger/v1/swagger.json
    ```
 
-### Step 2: Create Custom Connector in Power Platform
+### ステップ2: Power Platformでカスタムコネクタを作成
 
-1. Go to [Power Apps](https://make.powerapps.com) or [Power Automate](https://make.powerautomate.com)
-2. Navigate to **Data** → **Custom Connectors**
-3. Click **+ New custom connector** → **Import an OpenAPI file**
-4. Upload the downloaded `swagger.json` file
-5. Configure the connector:
-   - **General Tab**:
-     - Name: `PowerTools Encoding Converter`
-     - Host: `your-api-domain.com` (or `localhost:7XXX` for testing)
-     - Base URL: `/`
-   - **Security Tab**:
-     - Authentication type: `No authentication` (or configure as needed)
-   - **Definition Tab**:
-     - The actions should be auto-imported from OpenAPI
-   - **Test Tab**:
-     - Create a connection and test the API
+1. [Power Apps](https://make.powerapps.com) または [Power Automate](https://make.powerautomate.com) にアクセス
+2. **データ** → **カスタムコネクタ** に移動
+3. **+ 新しいカスタムコネクタ** → **OpenAPIファイルをインポート** をクリック
+4. ダウンロードした `swagger.json` ファイルをアップロード
+5. コネクタを設定：
+   - **全般タブ**:
+     - 名前: `PowerTools Encoding Converter`
+     - ホスト: `your-api-domain.com`（テストの場合は `localhost:7XXX`）
+     - ベースURL: `/`
+   - **セキュリティタブ**:
+     - 認証の種類: `認証なし`（必要に応じて設定）
+   - **定義タブ**:
+     - アクションはOpenAPIから自動インポートされます
+   - **テストタブ**:
+     - 接続を作成してAPIをテスト
 
-6. Click **Create connector**
+6. **コネクタの作成** をクリック
 
-### Step 3: Create Connection
+### ステップ3: 接続の作成
 
-1. After creating the connector, click **+ New connection**
-2. Complete authentication (if configured)
-3. The connection is now ready to use in Power Apps and Power Automate
+1. コネクタ作成後、**+ 新しい接続** をクリック
+2. 認証を完了（設定されている場合）
+3. Power AppsとPower Automateで使用可能になります
 
 ---
 
-## Power Apps Implementation
+## Power Appsでの実装
 
-### Scenario 1: Convert File and Save to Dataverse
+### シナリオ1: ファイル変換とDataverseへの保存
 
-This example shows how to:
-1. Upload a file using the attachment control
-2. Convert the file encoding
-3. Save the converted file to a Dataverse table's file column
+この例では以下を実行します：
+1. 添付ファイルコントロールを使用したファイルアップロード
+2. ファイルエンコーディングの変換
+3. 変換済みファイルをDataverseテーブルのファイル列に保存
 
-#### App Structure
+#### アプリ構造
 
-**Controls:**
+**コントロール：**
 ```
-- FileInput1 (Attachment control)
-- ddOutputEncoding (Dropdown)
-- btnConvert (Button)
-- btnSave (Button)
-- lblStatus (Label)
+- FileInput1 (添付ファイルコントロール)
+- ddOutputEncoding (ドロップダウン)
+- btnConvert (ボタン)
+- btnSave (ボタン)
+- lblStatus (ラベル)
 ```
 
-#### Setup Dropdown for Encodings
+#### エンコーディング選択用ドロップダウンの設定
 
 **ddOutputEncoding.Items:**
 ```javascript
 Table(
     {Value: "UTF-8", DisplayName: "UTF-8"},
-    {Value: "Shift_JIS", DisplayName: "Shift_JIS (Japanese)"},
-    {Value: "EUC-JP", DisplayName: "EUC-JP (Japanese)"},
-    {Value: "ISO-2022-JP", DisplayName: "ISO-2022-JP (Japanese)"},
-    {Value: "GB2312", DisplayName: "GB2312 (Simplified Chinese)"},
-    {Value: "Big5", DisplayName: "Big5 (Traditional Chinese)"}
+    {Value: "Shift_JIS", DisplayName: "Shift_JIS (日本語)"},
+    {Value: "EUC-JP", DisplayName: "EUC-JP (日本語)"},
+    {Value: "ISO-2022-JP", DisplayName: "ISO-2022-JP (日本語)"},
+    {Value: "GB2312", DisplayName: "GB2312 (簡体字中国語)"},
+    {Value: "Big5", DisplayName: "Big5 (繁体字中国語)"}
 )
 ```
 
-#### Convert File Button
+#### ファイル変換ボタン
 
 **btnConvert.OnSelect:**
 ```javascript
-// Convert the uploaded file to the selected encoding
+// アップロードされたファイルを選択したエンコーディングに変換
 Set(
     varConvertedFile,
     'PowerTools Encoding Converter'.ConvertFileEncoding({
         fileContentBase64: Base64(FileInput1.SelectedFile),
         fileName: FileInput1.SelectedFile.Name,
         outputEncoding: ddOutputEncoding.Selected.Value
-        // inputEncoding is optional - omit for auto-detection
+        // inputEncodingはオプション - 省略すると自動検出
     })
 );
 
-// Display conversion results
+// 変換結果を表示
 If(
     !IsBlank(varConvertedFile),
     Set(
         lblStatus.Text,
-        "Conversion successful!" & Char(10) &
-        "Detected: " & varConvertedFile.detectedEncoding & Char(10) &
-        "Output: " & varConvertedFile.outputEncoding & Char(10) &
-        "Size: " & Round(varConvertedFile.fileSizeBytes / 1024, 2) & " KB" &
+        "変換成功！" & Char(10) &
+        "検出: " & varConvertedFile.detectedEncoding & Char(10) &
+        "出力: " & varConvertedFile.outputEncoding & Char(10) &
+        "サイズ: " & Round(varConvertedFile.fileSizeBytes / 1024, 2) & " KB" &
         If(
             !IsBlank(varConvertedFile.detectionConfidence),
-            Char(10) & "Confidence: " & Text(varConvertedFile.detectionConfidence * 100, "0.0") & "%",
+            Char(10) & "信頼度: " & Text(varConvertedFile.detectionConfidence * 100, "0.0") & "%",
             ""
         )
     );
-    Notify("Conversion completed successfully!", NotificationType.Success),
-    Notify("Conversion failed!", NotificationType.Error)
+    Notify("変換が正常に完了しました！", NotificationType.Success),
+    Notify("変換に失敗しました！", NotificationType.Error)
 );
 ```
 
-#### Save to Dataverse Button
+#### Dataverseに保存するボタン
 
 **btnSave.OnSelect:**
 ```javascript
-// Save the converted file to a Dataverse record
+// 変換済みファイルをDataverseレコードに保存
 Patch(
     YourDataverseTable,
     LookUp(YourDataverseTable, ID = varRecordId),
@@ -155,34 +155,34 @@ Patch(
             FileName: varConvertedFile.fileName,
             Value: varConvertedFile.fileContentBase64
         },
-        Description: "Converted from " & varConvertedFile.detectedEncoding &
-                     " to " & varConvertedFile.outputEncoding
+        Description: "変換: " & varConvertedFile.detectedEncoding &
+                     " → " & varConvertedFile.outputEncoding
     }
 );
 
-Notify("File saved to Dataverse!", NotificationType.Success);
+Notify("ファイルをDataverseに保存しました！", NotificationType.Success);
 
-// Clear the form
+// フォームをクリア
 Reset(FileInput1);
 Set(varConvertedFile, Blank());
 ```
 
-### Scenario 2: Download Converted File
+### シナリオ2: 変換済みファイルのダウンロード
 
-If you want to download the converted file instead of saving to Dataverse:
+Dataverseに保存する代わりに変換済みファイルをダウンロードする場合：
 
 **btnDownload.OnSelect:**
 ```javascript
-// Use the Download function (requires Power Apps experimental features)
+// Download関数を使用（Power Appsの試験的機能が必要）
 Download(
     varConvertedFile.fileContentBase64,
     varConvertedFile.fileName
 );
 ```
 
-### Scenario 3: Specify Input Encoding
+### シナリオ3: 入力エンコーディングの指定
 
-If you know the input encoding and don't want auto-detection:
+入力エンコーディングが既知で自動検出が不要な場合：
 
 **btnConvert.OnSelect:**
 ```javascript
@@ -192,104 +192,104 @@ Set(
         fileContentBase64: Base64(FileInput1.SelectedFile),
         fileName: FileInput1.SelectedFile.Name,
         outputEncoding: ddOutputEncoding.Selected.Value,
-        inputEncoding: "Shift_JIS"  // Specify input encoding
+        inputEncoding: "Shift_JIS"  // 入力エンコーディングを指定
     })
 );
 ```
 
-### Full Power Apps Formula Reference
+### Power Apps数式リファレンス
 
-**Get list of supported encodings:**
+**サポートされているエンコーディング一覧を取得：**
 ```javascript
 Set(
     varEncodings,
     'PowerTools Encoding Converter'.GetSupportedEncodings()
 );
 
-// Use in dropdown
+// ドロップダウンで使用
 ddOutputEncoding.Items = varEncodings.encodings
 ```
 
-**Error Handling:**
+**エラーハンドリング：**
 ```javascript
 If(
     IsError('PowerTools Encoding Converter'.ConvertFileEncoding({...})),
     Notify(
-        "Error: " & FirstError.Message,
+        "エラー: " & FirstError.Message,
         NotificationType.Error
     ),
-    // Success logic
-    Notify("Success!", NotificationType.Success)
+    // 成功時の処理
+    Notify("成功しました！", NotificationType.Success)
 );
 ```
 
 ---
 
-## Power Automate Implementation
+## Power Automateでの実装
 
-### Scenario 1: Auto-Convert SharePoint Files
+### シナリオ1: SharePointファイルの自動変換
 
-This flow automatically converts files uploaded to SharePoint to UTF-8 encoding.
+このフローは、SharePointにアップロードされたファイルを自動的にUTF-8エンコーディングに変換します。
 
-**Trigger:**
-- **When a file is created (SharePoint)**
-  - Site Address: `https://yoursite.sharepoint.com/sites/yoursite`
-  - Library Name: `Documents`
+**トリガー:**
+- **ファイルが作成されたとき (SharePoint)**
+  - サイトのアドレス: `https://yoursite.sharepoint.com/sites/yoursite`
+  - ライブラリ名: `Documents`
 
-**Action 1: Get file content**
-- **Get file content (SharePoint)**
-  - File Identifier: `@{triggerOutputs()?['body/{Identifier}']}`
+**アクション1: ファイル コンテンツの取得**
+- **ファイル コンテンツの取得 (SharePoint)**
+  - ファイル識別子: `@{triggerOutputs()?['body/{Identifier}']}`
 
-**Action 2: Convert encoding**
+**アクション2: エンコーディング変換**
 - **PowerTools Encoding Converter - ConvertFileEncoding**
   - fileContentBase64: `@{base64(body('Get_file_content'))}`
   - fileName: `@{triggerOutputs()?['body/{FilenameWithExtension}']}`
   - outputEncoding: `UTF-8`
-  - inputEncoding: _(leave empty for auto-detection)_
+  - inputEncoding: _（自動検出の場合は空白のまま）_
 
-**Action 3: Save converted file**
-- **Create file (SharePoint)**
-  - Site Address: `https://yoursite.sharepoint.com/sites/yoursite`
-  - Folder Path: `/Converted`
-  - File Name: `@{body('PowerTools_Encoding_Converter_-_ConvertFileEncoding')?['fileName']}`
-  - File Content: `@{base64ToBinary(body('PowerTools_Encoding_Converter_-_ConvertFileEncoding')?['fileContentBase64'])}`
+**アクション3: 変換済みファイルの保存**
+- **ファイルの作成 (SharePoint)**
+  - サイトのアドレス: `https://yoursite.sharepoint.com/sites/yoursite`
+  - フォルダー パス: `/Converted`
+  - ファイル名: `@{body('PowerTools_Encoding_Converter_-_ConvertFileEncoding')?['fileName']}`
+  - ファイル コンテンツ: `@{base64ToBinary(body('PowerTools_Encoding_Converter_-_ConvertFileEncoding')?['fileContentBase64'])}`
 
-### Scenario 2: Convert and Email
+### シナリオ2: 変換してメール送信
 
-**Action: Send an email with attachment**
+**アクション: メールを送信（添付ファイル付き）**
 ```
-To: user@example.com
-Subject: Converted File - @{body('ConvertFileEncoding')?['fileName']}
-Body:
-  File converted successfully!
-  Original encoding: @{body('ConvertFileEncoding')?['detectedEncoding']}
-  New encoding: @{body('ConvertFileEncoding')?['outputEncoding']}
+宛先: user@example.com
+件名: 変換済みファイル - @{body('ConvertFileEncoding')?['fileName']}
+本文:
+  ファイルが正常に変換されました！
+  元のエンコーディング: @{body('ConvertFileEncoding')?['detectedEncoding']}
+  新しいエンコーディング: @{body('ConvertFileEncoding')?['outputEncoding']}
 
-Attachments:
-  - Name: @{body('ConvertFileEncoding')?['fileName']}
-  - Content Bytes: @{base64ToBinary(body('ConvertFileEncoding')?['fileContentBase64'])}
+添付ファイル:
+  - 名前: @{body('ConvertFileEncoding')?['fileName']}
+  - コンテンツ バイト: @{base64ToBinary(body('ConvertFileEncoding')?['fileContentBase64'])}
 ```
 
-### Scenario 3: Batch Convert Multiple Files
+### シナリオ3: 複数ファイルの一括変換
 
-**Apply to each (files from SharePoint folder)**
+**Apply to each（SharePointフォルダーのファイル）**
 ```
 For each: @{body('Get_files_(properties_only)')?['value']}
 
-  Action: Get file content
-    File Identifier: @{items('Apply_to_each')?['{Identifier}']}
+  アクション: ファイル コンテンツの取得
+    ファイル識別子: @{items('Apply_to_each')?['{Identifier}']}
 
-  Action: Convert encoding
+  アクション: エンコーディング変換
     fileContentBase64: @{base64(body('Get_file_content'))}
     fileName: @{items('Apply_to_each')?['{FilenameWithExtension}']}
     outputEncoding: Shift_JIS
 
-  Action: Create file
-    File Name: @{body('Convert_encoding')?['fileName']}
-    File Content: @{base64ToBinary(body('Convert_encoding')?['fileContentBase64'])}
+  アクション: ファイルの作成
+    ファイル名: @{body('Convert_encoding')?['fileName']}
+    ファイル コンテンツ: @{base64ToBinary(body('Convert_encoding')?['fileContentBase64'])}
 ```
 
-### Flow JSON Example
+### フローJSON例
 
 ```json
 {
@@ -313,11 +313,11 @@ For each: @{body('Get_files_(properties_only)')?['value']}
 
 ---
 
-## API Reference
+## APIリファレンス
 
-### Endpoint: Convert File Encoding
+### エンドポイント: ファイルエンコーディング変換
 
-**Request:**
+**リクエスト:**
 ```http
 POST /api/encodingconverter/convert
 Content-Type: application/json
@@ -326,11 +326,11 @@ Content-Type: application/json
   "fileContentBase64": "base64_encoded_file_content",
   "fileName": "example.csv",
   "outputEncoding": "UTF-8",
-  "inputEncoding": "Shift_JIS"  // Optional
+  "inputEncoding": "Shift_JIS"  // オプション
 }
 ```
 
-**Response:**
+**レスポンス:**
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -341,18 +341,18 @@ Content-Type: application/json
   "detectedEncoding": "shift_jis",
   "outputEncoding": "utf-8",
   "fileSizeBytes": 12345,
-  "detectionConfidence": 0.95  // Only when auto-detecting
+  "detectionConfidence": 0.95  // 自動検出時のみ
 }
 ```
 
-### Endpoint: Get Supported Encodings
+### エンドポイント: サポートされているエンコーディング一覧取得
 
-**Request:**
+**リクエスト:**
 ```http
 GET /api/encodingconverter/encodings
 ```
 
-**Response:**
+**レスポンス:**
 ```json
 {
   "encodings": [
@@ -364,23 +364,23 @@ GET /api/encodingconverter/encodings
 }
 ```
 
-### Supported Encodings
+### サポートされているエンコーディング
 
-| Encoding | Description | Common Use |
+| エンコーディング | 説明 | 一般的な用途 |
 |----------|-------------|------------|
-| UTF-8 | Unicode (8-bit) | Modern standard, web |
-| UTF-16 | Unicode (16-bit LE) | Windows, .NET |
-| UTF-16BE | Unicode (16-bit BE) | Unix, Mac |
-| Shift_JIS | Japanese | Legacy Japanese files |
-| EUC-JP | Japanese | Unix Japanese files |
-| ISO-2022-JP | Japanese | Email (JIS) |
-| GB2312 | Simplified Chinese | Chinese files |
-| Big5 | Traditional Chinese | Taiwan, Hong Kong |
-| EUC-KR | Korean | Korean files |
-| ISO-8859-1 | Latin-1 | Western European |
-| Windows-1252 | Windows Latin | Windows Western European |
+| UTF-8 | Unicode (8ビット) | 現代の標準、Web |
+| UTF-16 | Unicode (16ビット LE) | Windows、.NET |
+| UTF-16BE | Unicode (16ビット BE) | Unix、Mac |
+| Shift_JIS | 日本語 | レガシー日本語ファイル |
+| EUC-JP | 日本語 | Unix日本語ファイル |
+| ISO-2022-JP | 日本語 | メール（JIS） |
+| GB2312 | 簡体字中国語 | 中国語ファイル |
+| Big5 | 繁体字中国語 | 台湾、香港 |
+| EUC-KR | 韓国語 | 韓国語ファイル |
+| ISO-8859-1 | Latin-1 | 西ヨーロッパ |
+| Windows-1252 | Windows Latin | Windows西ヨーロッパ |
 
-### Error Responses
+### エラーレスポンス
 
 **400 Bad Request:**
 ```json
@@ -413,65 +413,65 @@ GET /api/encodingconverter/encodings
 
 ---
 
-## Best Practices
+## ベストプラクティス
 
-### 1. File Size Considerations
-- For files larger than 10MB, consider using chunked processing
-- Base64 encoding increases payload size by ~33%
-- Power Automate has a 100MB limit for action inputs/outputs
+### 1. ファイルサイズの考慮事項
+- 10MBを超えるファイルの場合は、チャンク処理の使用を検討
+- Base64エンコーディングによりペイロードサイズが約33%増加
+- Power Automateはアクション入出力に100MBの制限あり
 
-### 2. Encoding Detection
-- Auto-detection works best with files > 1KB
-- For critical applications, specify input encoding if known
-- Check `detectionConfidence` - values below 0.8 may be unreliable
+### 2. エンコーディング検出
+- 自動検出は1KB以上のファイルで最良の結果を提供
+- 重要なアプリケーションでは、既知の場合は入力エンコーディングを指定
+- `detectionConfidence`を確認 - 0.8未満の値は信頼性が低い可能性
 
-### 3. Error Handling
-- Always implement error handling in your flows/apps
-- Check for `IsError()` in Power Apps
-- Use "Configure run after" in Power Automate to handle failures
+### 3. エラーハンドリング
+- フロー/アプリには必ずエラーハンドリングを実装
+- Power Appsでは`IsError()`を確認
+- Power Automateでは「実行後の構成」を使用して失敗を処理
 
-### 4. Performance
-- Cache the list of supported encodings in a collection
-- Use parallel processing for batch conversions in Power Automate
-- Consider using the "Apply to each" concurrency settings for better performance
+### 4. パフォーマンス
+- サポートされているエンコーディングのリストをコレクションにキャッシュ
+- Power Automateでのバッチ変換には並列処理を使用
+- より良いパフォーマンスのために「Apply to each」の同時実行設定を検討
 
-### 5. Security
-- Validate file types before conversion
-- Implement authentication on the API if handling sensitive data
-- Use environment variables for API endpoints
-
----
-
-## Troubleshooting
-
-### Issue: "Invalid Base64 file content"
-**Solution:** Ensure you're using `Base64()` function in Power Apps or `base64()` expression in Power Automate.
-
-### Issue: "Binary files are not supported"
-**Solution:** The API only supports text files. Check file type before conversion.
-
-### Issue: Low detection confidence
-**Solution:** Specify the input encoding explicitly or ensure file has enough content for accurate detection.
-
-### Issue: Custom connector not showing in Power Apps
-**Solution:** Ensure you've created a connection after creating the custom connector.
-
-### Issue: "Could not execute request"
-**Solution:** Verify API endpoint is accessible and authentication is configured correctly.
+### 5. セキュリティ
+- 変換前にファイルタイプを検証
+- 機密データを扱う場合はAPIに認証を実装
+- APIエンドポイントには環境変数を使用
 
 ---
 
-## Additional Resources
+## トラブルシューティング
 
-- [Power Platform Custom Connectors Documentation](https://learn.microsoft.com/en-us/connectors/custom-connectors/)
-- [Power Apps Formula Reference](https://learn.microsoft.com/en-us/powerapps/maker/canvas-apps/formula-reference)
-- [Power Automate Expression Reference](https://learn.microsoft.com/en-us/power-automate/use-expressions-in-conditions)
+### 問題: "Invalid Base64 file content"
+**解決策:** Power Appsでは`Base64()`関数、Power Automateでは`base64()`式を使用していることを確認してください。
+
+### 問題: "Binary files are not supported"
+**解決策:** このAPIはテキストファイルのみをサポートしています。変換前にファイルタイプを確認してください。
+
+### 問題: 検出信頼度が低い
+**解決策:** 入力エンコーディングを明示的に指定するか、ファイルに正確な検出のための十分なコンテンツがあることを確認してください。
+
+### 問題: カスタムコネクタがPower Appsに表示されない
+**解決策:** カスタムコネクタ作成後に接続を作成したことを確認してください。
+
+### 問題: "Could not execute request"
+**解決策:** APIエンドポイントがアクセス可能で、認証が正しく設定されていることを確認してください。
 
 ---
 
-## Support
+## 追加リソース
 
-For issues or questions:
-1. Check the [PowerTools GitHub repository](https://github.com/yourorg/powertools)
-2. Review API logs for error details
-3. Test the API directly using Swagger UI before troubleshooting connector issues
+- [Power Platformカスタムコネクタドキュメント](https://learn.microsoft.com/ja-jp/connectors/custom-connectors/)
+- [Power Apps数式リファレンス](https://learn.microsoft.com/ja-jp/powerapps/maker/canvas-apps/formula-reference)
+- [Power Automate式リファレンス](https://learn.microsoft.com/ja-jp/power-automate/use-expressions-in-conditions)
+
+---
+
+## サポート
+
+問題や質問がある場合：
+1. [PowerTools GitHubリポジトリ](https://github.com/yourorg/powertools)を確認
+2. エラー詳細についてはAPIログを確認
+3. コネクタの問題をトラブルシューティングする前に、Swagger UIを使用してAPIを直接テスト
