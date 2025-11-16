@@ -19,7 +19,7 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/encodingconverter/encodings"]
+      test: ["CMD", "wget", "--spider", "--tries=1", "--no-verbose", "http://localhost:8080/api/encodingconverter/encodings"]
       interval: 30s
       timeout: 3s
       retries: 3

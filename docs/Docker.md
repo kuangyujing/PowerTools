@@ -133,6 +133,53 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 - **最小権限の原則**: 必要最小限のファイルのみをコピー
 - **ベースイメージ**: Microsoft公式のイメージを使用
 
+### ヘルスチェック
+
+PowerToolsのDockerfileには、コンテナの稼働状態を監視するヘルスチェックが含まれています。
+
+**wgetを使用する理由:**
+ASP.NET Coreの公式イメージ（`mcr.microsoft.com/dotnet/aspnet:8.0`）には、デフォルトでHTTPクライアントツールが含まれていません。PowerToolsでは、イメージサイズと軽量性を考慮してwgetを採用しています：
+
+```dockerfile
+# Install wget for healthcheck (more lightweight than curl: ~2MB vs ~15MB)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends wget && \
+    rm -rf /var/lib/apt/lists/*
+```
+
+**パッケージサイズの比較:**
+- **wget**: 約2MB（依存関係込み）
+- **curl**: 約15MB（依存関係込み）
+
+wgetを使用することで、約13MBのイメージサイズ削減を実現しています。
+
+**wgetのヘルスチェックコマンド:**
+```dockerfile
+HEALTHCHECK CMD wget --spider --tries=1 --no-verbose http://localhost:8080/api/encodingconverter/encodings || exit 1
+```
+
+**オプションの説明:**
+- `--spider`: ページをダウンロードせず、存在確認のみ実行
+- `--tries=1`: リトライを1回のみに制限（無限ループを防止）
+- `--no-verbose`: エラー時のみログ出力
+
+**代替案:**
+
+1. **curlを使用**: より多機能だがイメージサイズが大きい
+   ```dockerfile
+   RUN apt-get update && apt-get install -y --no-install-recommends curl
+   ```
+   ```dockerfile
+   HEALTHCHECK CMD curl --fail http://localhost:8080/api/encodingconverter/encodings || exit 1
+   ```
+
+2. **.NETベースのヘルスチェックツール**: 追加パッケージ不要（例: MrRabbit.HealthChecks.Container.Client）
+   ```dockerfile
+   HEALTHCHECK CMD ["dotnet", "/app/healthcheck.dll", "http://localhost:8080/api/encodingconverter/encodings"]
+   ```
+
+3. **ヘルスチェックを削除**: 外部の監視ツール（Kubernetes Liveness/Readiness Probes等）を使用する場合
+
 ---
 
 ## docker-composeの使用
