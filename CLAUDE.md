@@ -83,7 +83,6 @@ The solution follows standard .NET project organization:
 ### Key Implementation Details
 - The server uses Controller-based architecture with `AddControllers()` and `MapControllers()` in `Program.cs`
 - Controllers inherit from `ControllerBase` and use standard `[ApiController]` and `[Route]` attributes
-- Sample `WeatherForecastController` demonstrates the Controller pattern with dependency injection
 - Swagger UI is enabled in development environment for API exploration at `/swagger`
 - HTTPS redirection and authorization middleware are configured by default
 - Test project is set up with xUnit and code coverage collection support via coverlet
