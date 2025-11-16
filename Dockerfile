@@ -28,6 +28,11 @@ RUN dotnet publish "PowerTools.Server.csproj" -c Release -o /app/publish /p:UseA
 # Stage 3: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 
+# Install wget for healthcheck (more lightweight than curl: ~2MB vs ~15MB)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends wget && \
+    rm -rf /var/lib/apt/lists/*
+
 # Create a non-root user
 RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 
@@ -51,7 +56,7 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl --fail http://localhost:8080/api/encodingconverter/encodings || exit 1
+    CMD wget --spider --tries=1 --no-verbose http://localhost:8080/api/encodingconverter/encodings || exit 1
 
 # Start the application
 ENTRYPOINT ["dotnet", "PowerTools.Server.dll"]
