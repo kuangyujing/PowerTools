@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  powertools:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: powertools:latest
+    container_name: powertools-server
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft.AspNetCore=Warning
+    volumes:
+      # Mount logs directory (optional)
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/encodingconverter/encodings"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - powertools-network
+
+networks:
+  powertools-network:
+    driver: bridge
