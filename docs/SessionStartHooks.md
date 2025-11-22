@@ -287,6 +287,11 @@ chmod +x .claude/session-start.sh
 #!/bin/bash
 # Node.js環境セットアップ
 
+# sudoの有無と権限をチェック
+if ! command -v sudo &> /dev/null || ! sudo -n true 2>/dev/null; then
+    echo "Warning: sudo access is required to install Node.js. Please ensure you have sudo privileges."
+    exit 1
+fi
 if ! command -v node &> /dev/null; then
     curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
     # Optionally verify the script's integrity here (e.g., checksum)
