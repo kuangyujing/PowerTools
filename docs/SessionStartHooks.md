@@ -288,7 +288,10 @@ chmod +x .claude/session-start.sh
 # Node.js環境セットアップ
 
 if ! command -v node &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+    # Optionally verify the script's integrity here (e.g., checksum)
+    sudo bash /tmp/nodesource_setup.sh
+    rm /tmp/nodesource_setup.sh
     sudo apt-get install -y nodejs
 fi
 
