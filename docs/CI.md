@@ -85,12 +85,21 @@ on:
 `dotnet build` でReleaseビルドを実行します。
 
 ### 5. Run tests
-`dotnet test` でユニットテストを実行し、コードカバレッジを収集します。
+`dotnet test` でユニットテストを実行し、コードカバレッジを収集します。TRX形式のテストレポートも生成します。
 
-### 6. Upload test results
+### 6. Generate coverage report
+コードカバレッジをMarkdown形式のレポートに変換します。カバレッジ閾値は60%（警告）と80%（良好）に設定されています。
+
+### 7. Upload test results
 テスト結果をアーティファクトとしてアップロードします（30日間保持）。
 
-### 7. Upload coverage to Codecov
+### 8. Post coverage comment
+PRにコードカバレッジのサマリーをコメントとして投稿します。同じPRへの再実行時はコメントが更新されます。
+
+### 9. Generate test report
+TRX形式のテスト結果をGitHub Checksに表示します。テストの成功/失敗が視覚的に確認できます。
+
+### 10. Upload coverage to Codecov
 カバレッジレポートをCodecovにアップロードします（オプション）。
 
 ---
@@ -121,24 +130,37 @@ gh run list --workflow=test.yml
 
 ## テスト結果の確認
 
-### PRでの確認
+### PRコメントでの確認
 
-プルリクエストを作成すると、自動的にテストが実行されます。結果は以下で確認できます：
+プルリクエストを作成すると、以下の情報が自動的にPRコメントとして投稿されます：
 
-1. PRページの **Checks** タブ
+**コードカバレッジサマリー:**
+- ライン/ブランチカバレッジの割合
+- カバレッジバッジ（色分け表示）
+- 閾値に対する状態（60%未満: 赤、60-80%: 黄、80%以上: 緑）
+
+コメントは同じPRへの再実行時に自動更新されるため、履歴が煩雑になりません。
+
+### GitHub Checksでの確認
+
+PRページの **Checks** タブで以下を確認できます：
+
+1. **Test Results**: 各テストの成功/失敗が一覧表示
 2. コミットステータス（緑のチェックマークまたは赤のX）
 
 ### アーティファクトのダウンロード
 
-テスト結果とカバレッジレポートはアーティファクトとして保存されます：
+詳細なテスト結果とカバレッジレポートはアーティファクトとして保存されます：
 
 1. **Actions** タブでワークフロー実行を選択
 2. **Artifacts** セクションから `test-results` をダウンロード
-3. `coverage.cobertura.xml` でカバレッジを確認
+3. 含まれるファイル:
+   - `coverage.cobertura.xml` - 詳細なカバレッジデータ
+   - `test-results.trx` - テスト実行結果
 
 ### Codecovでの確認（オプション）
 
-Codecovを設定している場合、PRにカバレッジレポートがコメントされます。
+Codecovを設定している場合、より詳細なカバレッジ分析が利用できます。
 
 ---
 
@@ -170,6 +192,13 @@ dotnet test --no-build --configuration Release --verbosity normal
 **確認事項:**
 1. Codecovトークンが設定されているか確認（必要な場合）
 2. `coverage.cobertura.xml` が生成されているか確認
+
+### 問題: PRコメントが投稿されない
+
+**確認事項:**
+1. ワークフローの `permissions` に `pull-requests: write` が設定されているか確認
+2. PRイベントでワークフローが実行されているか確認（手動実行時はコメントされません）
+3. Actionsのログで `Post coverage comment` ステップのエラーを確認
 
 ---
 
