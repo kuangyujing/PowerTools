@@ -282,7 +282,12 @@ public class ExcelController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(sheetName))
         {
-            return workbook.Worksheets.First();
+            var firstWorksheet = workbook.Worksheets.FirstOrDefault();
+            if (firstWorksheet == null)
+            {
+                throw new ArgumentException("The workbook contains no worksheets.");
+            }
+            return firstWorksheet;
         }
 
         var worksheet = workbook.Worksheets.FirstOrDefault(ws =>
