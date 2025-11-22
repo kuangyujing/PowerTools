@@ -428,6 +428,11 @@ BUILD_PID=$!
 
 # 他の処理を続行
 echo "Build started in background (PID: $BUILD_PID)"
+
+# 注意: ビルド結果に依存する処理が後続にある場合は、必ず完了を待ってください
+# 例:
+# wait $BUILD_PID
+# echo "Build completed with exit code: $?"
 ```
 
 ---
