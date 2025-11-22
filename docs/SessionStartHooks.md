@@ -372,8 +372,12 @@ if ! command -v node &> /dev/null; then
 fi
 
 # 依存関係の復元
-dotnet restore
-npm install --prefix ./frontend
+if compgen -G "*.csproj" > /dev/null || compgen -G "*.sln" > /dev/null; then
+    dotnet restore
+fi
+if [ -f "./frontend/package.json" ]; then
+    npm install --prefix ./frontend
+fi
 
 # 環境変数の永続化
 if [ -n "$CLAUDE_ENV_FILE" ]; then
