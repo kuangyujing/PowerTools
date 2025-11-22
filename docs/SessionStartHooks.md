@@ -315,6 +315,7 @@ if [ ! -d ".venv" ]; then
     python3 -m venv .venv
 fi
 
+# 仮想環境の有効化（このスクリプト内のみ有効。以降のシェルには影響しません）
 source .venv/bin/activate
 
 if [ -f "requirements.txt" ]; then
