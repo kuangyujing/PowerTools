@@ -47,7 +47,7 @@ docker run -d \
 **3. 動作確認**
 ```bash
 # ヘルスチェック
-curl http://localhost:8080/api/encodingconverter/encodings
+curl http://localhost:8080/api/health
 
 # Swagger UI（ブラウザで開く）
 open http://localhost:8080/swagger
@@ -73,7 +73,7 @@ docker-compose up -d
 
 **2. 動作確認**
 ```bash
-curl http://localhost:8080/api/encodingconverter/encodings
+curl http://localhost:8080/api/health
 ```
 
 **3. ログの確認**
@@ -155,7 +155,7 @@ wgetを使用することで、約13MBのイメージサイズ削減を実現し
 
 **wgetのヘルスチェックコマンド:**
 ```dockerfile
-HEALTHCHECK CMD wget --spider --tries=1 --no-verbose http://localhost:8080/api/encodingconverter/encodings || exit 1
+HEALTHCHECK CMD wget --spider --tries=1 --no-verbose http://localhost:8080/api/health || exit 1
 ```
 
 **オプションの説明:**
@@ -170,12 +170,12 @@ HEALTHCHECK CMD wget --spider --tries=1 --no-verbose http://localhost:8080/api/e
    RUN apt-get update && apt-get install -y --no-install-recommends curl
    ```
    ```dockerfile
-   HEALTHCHECK CMD curl --fail http://localhost:8080/api/encodingconverter/encodings || exit 1
+   HEALTHCHECK CMD curl --fail http://localhost:8080/api/health || exit 1
    ```
 
 2. **.NETベースのヘルスチェックツール**: 追加パッケージ不要（例: MrRabbit.HealthChecks.Container.Client）
    ```dockerfile
-   HEALTHCHECK CMD ["dotnet", "/app/healthcheck.dll", "http://localhost:8080/api/encodingconverter/encodings"]
+   HEALTHCHECK CMD ["dotnet", "/app/healthcheck.dll", "http://localhost:8080/api/health"]
    ```
 
 3. **ヘルスチェックを削除**: 外部の監視ツール（Kubernetes Liveness/Readiness Probes等）を使用する場合
@@ -335,7 +335,7 @@ Dockerfileにはデフォルトでヘルスチェックが含まれています�
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "--fail", "http://localhost:8080/api/encodingconverter/encodings"]
+  test: ["CMD", "curl", "--fail", "http://localhost:8080/api/health"]
   interval: 30s
   timeout: 3s
   retries: 3
