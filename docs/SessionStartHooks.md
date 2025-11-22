@@ -370,6 +370,11 @@ fi
 
 # Node.js (フロントエンド用)
 if ! command -v node &> /dev/null; then
+    # sudoの有無と権限をチェック
+    if ! command -v sudo &> /dev/null || ! sudo -n true 2>/dev/null; then
+        echo "Warning: sudo access is required to install Node.js. Please ensure you have sudo privileges."
+        exit 1
+    fi
     curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
     sudo -E bash /tmp/nodesource_setup.sh
     rm /tmp/nodesource_setup.sh
