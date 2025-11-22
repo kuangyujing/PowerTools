@@ -30,7 +30,7 @@ PowerToolsでは、GitHub Actionsを使用してCIを実装しています。主
 ```
 .github/
 └── workflows/
-    └── test.yml    # テスト実行ワークフロー
+    └── ci.yml    # CI ワークフロー（ビルド・テスト・カバレッジ）
 ```
 
 ### 使用環境
@@ -109,7 +109,7 @@ TRX形式のテスト結果をGitHub Checksに表示します。テストの成�
 ### GitHub UIから実行
 
 1. GitHubリポジトリの **Actions** タブを開く
-2. 左側のワークフロー一覧から **Test** を選択
+2. 左側のワークフロー一覧から **CI** を選択
 3. **Run workflow** ボタンをクリック
 4. ブランチを選択して **Run workflow** を実行
 
@@ -117,13 +117,13 @@ TRX形式のテスト結果をGitHub Checksに表示します。テストの成�
 
 ```bash
 # ワークフローを手動実行
-gh workflow run test.yml
+gh workflow run ci.yml
 
 # 特定のブランチで実行
-gh workflow run test.yml --ref feature/my-branch
+gh workflow run ci.yml --ref feature/my-branch
 
 # 実行状況を確認
-gh run list --workflow=test.yml
+gh run list --workflow=ci.yml
 ```
 
 ---
@@ -236,7 +236,7 @@ permissions:
 2. **Add branch protection rule** をクリック
 3. Branch name pattern に `main` を入力
 4. **Require status checks to pass before merging** を有効化
-5. **Run Tests** を必須チェックとして追加
+5. **Build and Test** を必須チェックとして追加
 
 ---
 
