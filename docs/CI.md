@@ -200,6 +200,21 @@ dotnet test --no-build --configuration Release --verbosity normal
 2. PRイベントでワークフローが実行されているか確認（手動実行時はコメントされません）
 3. Actionsのログで `Post coverage comment` ステップのエラーを確認
 
+### 問題: "Resource not accessible by integration" エラー
+
+**原因:**
+GitHub Actionsのトークンに必要な権限が不足しています。
+
+**解決策:**
+ワークフローファイルの `permissions` に必要な権限を追加：
+
+```yaml
+permissions:
+  contents: read
+  pull-requests: write  # PRコメント投稿に必要
+  checks: write         # テストレポート作成に必要
+```
+
 ---
 
 ## カスタマイズ
