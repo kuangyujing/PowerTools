@@ -364,7 +364,9 @@ fi
 
 # Node.js (フロントエンド用)
 if ! command -v node &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+    sudo -E bash /tmp/nodesource_setup.sh
+    rm /tmp/nodesource_setup.sh
     sudo apt-get install -y nodejs
 fi
 
