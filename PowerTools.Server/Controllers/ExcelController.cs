@@ -273,6 +273,7 @@ public class ExcelController : ControllerBase
         }
         catch (Exception ex)
         {
+            stream.Dispose();
             throw new ArgumentException($"Invalid Excel file: {ex.Message}");
         }
     }
