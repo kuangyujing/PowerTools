@@ -334,7 +334,7 @@ if command -v docker &> /dev/null; then
 
     # Docker Composeで依存サービスを起動
     if [ -f "docker-compose.yml" ]; then
-        docker-compose up -d
+        docker compose up -d 2>/dev/null || docker-compose up -d
     fi
 else
     echo "Warning: Docker is not available"
