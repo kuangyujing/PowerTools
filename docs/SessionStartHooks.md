@@ -392,8 +392,8 @@ if ! command -v dotnet &> /dev/null; then
     # インストール処理
 fi
 
-# 悪い例: 常にインストールを実行
-curl -sSL https://dot.net/v1/dotnet-install.sh | bash
+# 悪い例: インストーラをダウンロードするだけで実行しない（実際には何もインストールされない）
+curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
 ```
 
 ### 2. エラーハンドリング
