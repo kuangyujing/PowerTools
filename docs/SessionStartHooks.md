@@ -356,7 +356,10 @@ echo "=== Setting up development environment ==="
 
 # .NET SDK
 if ! command -v dotnet &> /dev/null; then
-    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0
+    curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+    chmod +x /tmp/dotnet-install.sh
+    /tmp/dotnet-install.sh --channel 8.0 --install-dir "$HOME/.dotnet"
+    rm /tmp/dotnet-install.sh
 fi
 
 # Node.js (フロントエンド用)
