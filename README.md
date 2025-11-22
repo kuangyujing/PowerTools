@@ -1,3 +1,5 @@
+[![CI](https://github.com/kuangyujing/PowerTools/actions/workflows/ci.yml/badge.svg)](https://github.com/kuangyujing/PowerTools/actions/workflows/ci.yml)
+
 ![Power Tools](assets/banner.png)
 
 # PowerTools
