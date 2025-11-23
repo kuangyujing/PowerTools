@@ -41,6 +41,11 @@ public class QrCodeResponse
     public string ImageBase64 { get; set; } = string.Empty;
 
     /// <summary>
+    /// Data URI for direct image embedding (e.g., data:image/png;base64,xxxxx)
+    /// </summary>
+    public string DataUri { get; set; } = string.Empty;
+
+    /// <summary>
     /// Output format (png or svg)
     /// </summary>
     public string Format { get; set; } = string.Empty;
@@ -110,6 +115,11 @@ public class BarcodeResponse
     /// Base64-encoded image data
     /// </summary>
     public string ImageBase64 { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Data URI for direct image embedding (e.g., data:image/png;base64,xxxxx)
+    /// </summary>
+    public string DataUri { get; set; } = string.Empty;
 
     /// <summary>
     /// Output format (png or svg)

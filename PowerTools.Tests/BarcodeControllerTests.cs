@@ -38,6 +38,8 @@ public class BarcodeControllerTests
         var response = result.Value as QrCodeResponse;
         Assert.NotNull(response);
         Assert.False(string.IsNullOrEmpty(response.ImageBase64));
+        Assert.False(string.IsNullOrEmpty(response.DataUri));
+        Assert.StartsWith("data:image/png;base64,", response.DataUri);
         Assert.Equal("png", response.Format);
         Assert.Equal(200, response.Width);
         Assert.Equal(200, response.Height);
@@ -88,6 +90,9 @@ public class BarcodeControllerTests
         var svgContent = System.Text.Encoding.UTF8.GetString(
             Convert.FromBase64String(response.ImageBase64));
         Assert.Contains("<svg", svgContent);
+
+        // Verify DataUri format for SVG
+        Assert.StartsWith("data:image/svg+xml;base64,", response.DataUri);
     }
 
     [Theory]
@@ -189,6 +194,8 @@ public class BarcodeControllerTests
         var response = result.Value as BarcodeResponse;
         Assert.NotNull(response);
         Assert.False(string.IsNullOrEmpty(response.ImageBase64));
+        Assert.False(string.IsNullOrEmpty(response.DataUri));
+        Assert.StartsWith("data:image/png;base64,", response.DataUri);
         Assert.Equal("png", response.Format);
         Assert.Equal("Code128", response.BarcodeType);
         Assert.True(response.FileSizeBytes > 0);
@@ -360,6 +367,9 @@ public class BarcodeControllerTests
         var svgContent = System.Text.Encoding.UTF8.GetString(
             Convert.FromBase64String(response.ImageBase64));
         Assert.Contains("<svg", svgContent);
+
+        // Verify DataUri format for SVG
+        Assert.StartsWith("data:image/svg+xml;base64,", response.DataUri);
     }
 
     [Fact]

@@ -101,9 +101,13 @@ public class BarcodeController : ControllerBase
                 imageBytes = data.ToArray();
             }
 
+            var base64String = Convert.ToBase64String(imageBytes);
+            var mimeType = GetMimeType(format);
+
             var response = new QrCodeResponse
             {
-                ImageBase64 = Convert.ToBase64String(imageBytes),
+                ImageBase64 = base64String,
+                DataUri = $"data:{mimeType};base64,{base64String}",
                 Format = format,
                 Width = bitmap.Width,
                 Height = bitmap.Height,
@@ -200,9 +204,13 @@ public class BarcodeController : ControllerBase
                 imageBytes = data.ToArray();
             }
 
+            var base64String = Convert.ToBase64String(imageBytes);
+            var mimeType = GetMimeType(format);
+
             var response = new BarcodeResponse
             {
-                ImageBase64 = Convert.ToBase64String(imageBytes),
+                ImageBase64 = base64String,
+                DataUri = $"data:{mimeType};base64,{base64String}",
                 Format = format,
                 Width = bitmap.Width,
                 Height = bitmap.Height,
@@ -315,6 +323,16 @@ public class BarcodeController : ControllerBase
             return "ITF content must contain only digits";
         }
         return null;
+    }
+
+    private static string GetMimeType(string format)
+    {
+        return format switch
+        {
+            "svg" => "image/svg+xml",
+            "png" => "image/png",
+            _ => "image/png"
+        };
     }
 
     private static string GenerateSvgFromBitmap(SKBitmap bitmap)
