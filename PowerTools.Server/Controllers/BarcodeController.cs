@@ -341,18 +341,24 @@ public class BarcodeController : ControllerBase
         sb.AppendLine($"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{bitmap.Width}\" height=\"{bitmap.Height}\" viewBox=\"0 0 {bitmap.Width} {bitmap.Height}\">");
         sb.AppendLine($"<rect width=\"{bitmap.Width}\" height=\"{bitmap.Height}\" fill=\"white\"/>");
 
+        // Get direct access to pixel data for better performance
+        var pixels = bitmap.Pixels;
+        int width = bitmap.Width;
+        int height = bitmap.Height;
+
         // Convert bitmap pixels to SVG rectangles (for black pixels only)
-        for (int y = 0; y < bitmap.Height; y++)
+        for (int y = 0; y < height; y++)
         {
             int x = 0;
-            while (x < bitmap.Width)
+            int rowOffset = y * width;
+            while (x < width)
             {
-                var pixel = bitmap.GetPixel(x, y);
+                var pixel = pixels[rowOffset + x];
                 if (pixel.Red < 128) // Black pixel
                 {
                     // Find the run length of black pixels
                     int startX = x;
-                    while (x < bitmap.Width && bitmap.GetPixel(x, y).Red < 128)
+                    while (x < width && pixels[rowOffset + x].Red < 128)
                     {
                         x++;
                     }
