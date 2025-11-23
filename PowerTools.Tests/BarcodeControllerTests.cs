@@ -227,7 +227,7 @@ public class BarcodeControllerTests
         // Arrange
         var request = new BarcodeRequest
         {
-            Content = "4901234567890", // Valid EAN-13
+            Content = "4901234567894", // Valid EAN-13 (checksum digit: 4)
             BarcodeType = "EAN13"
         };
 
