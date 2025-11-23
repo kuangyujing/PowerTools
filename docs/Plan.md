@@ -120,7 +120,7 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 
 | 機能 | Power Platformの制限 | PowerTools実装案 | 優先度 |
 |------|---------------------|------------------|--------|
-| 正規表現 | クラウドフローでネイティブサポートなし | `RegexController` | 高 |
+| 正規表現 | クラウドフローでネイティブサポートなし | `RegexController` | **実装済み** |
 | 文字列操作 | 基本的な操作のみ | `StringController` | 低 |
 
 #### 正規表現の詳細
@@ -211,7 +211,7 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 
 ### 高優先度
 1. **ZIP圧縮/解凍** - 100ファイル/100MB制限の回避、圧縮機能の提供
-2. **正規表現処理** - クラウドフローで最も要望が多い機能
+2. ~~**正規表現処理**~~ - **実装済み**
 3. **CSV高速パース** - ループ処理回避によるパフォーマンス改善
 4. **QRコード/バーコード生成** - ネイティブ生成不可の解消
 
@@ -236,7 +236,7 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 | `ExcelController` | Excelデータ抽出 | 実装済み |
 | `HealthController` | ヘルスチェック | 実装済み |
 | `ZipController` | ZIP圧縮/解凍 | 未実装 |
-| `RegexController` | 正規表現処理 | 未実装 |
+| `RegexController` | 正規表現処理 | 実装済み |
 | `CsvController` | CSV解析 | 未実装 |
 | `BarcodeController` | QRコード/バーコード | 未実装 |
 | `ImageController` | 画像処理 | 未実装 |
@@ -265,3 +265,4 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 | 日付 | 内容 |
 |------|------|
 | 2024-11-23 | 初版作成 |
+| 2025-11-23 | RegexController 実装完了 |
