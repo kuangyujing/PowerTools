@@ -64,6 +64,66 @@ dotnet clean
 dotnet restore
 ```
 
+## NuGet パッケージのローカルキャッシュ
+
+### 背景
+
+Claude Code Web 環境では、プロキシ経由で Microsoft の CDN にアクセスできないため、通常の `dotnet restore` コマンドで NuGet パッケージをダウンロードできません。この問題を回避するため、パッケージをローカルにキャッシュしてリポジトリに含めています。
+
+### キャッシュの作成方法
+
+ローカル開発環境（プロキシ制限のない環境）で以下のコマンドを実行し、パッケージをキャッシュします：
+
+```bash
+# パッケージを ./packages ディレクトリにキャッシュ
+dotnet restore --packages ./packages
+```
+
+このコマンドにより、ソリューションが依存するすべての NuGet パッケージが `./packages` ディレクトリにダウンロードされます。
+
+### キャッシュの利用方法
+
+キャッシュされたパッケージを使用するには、以下の環境変数を設定してからリストアを実行します：
+
+```bash
+# 環境変数を設定
+export NUGET_PACKAGES=./packages
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+# オフラインモードでリストア（ネットワークアクセスなし）
+dotnet restore --source ./packages --no-http-cache
+```
+
+### SessionStart Hook による自動設定
+
+`.claude/session-start.sh` が Claude Code セッション開始時に自動実行され、上記の設定を行います。これにより、Claude Code Web 環境でも自動的にローカルキャッシュからパッケージがリストアされます。
+
+### 新しいパッケージの追加時
+
+新しい NuGet パッケージを追加した場合は、ローカル開発環境で以下の手順を実行してください：
+
+1. 通常通りパッケージを追加：
+   ```bash
+   dotnet add package <パッケージ名>
+   ```
+
+2. キャッシュを更新：
+   ```bash
+   dotnet restore --packages ./packages
+   ```
+
+3. `./packages` ディレクトリの変更をコミット
+
+### ディレクトリ構成
+
+```
+PowerTools/
+├── packages/           # NuGet パッケージのローカルキャッシュ
+├── .claude/
+│   └── session-start.sh  # SessionStart Hook（自動設定スクリプト）
+└── ...
+```
+
 ## Architecture
 
 ### Technology Stack
