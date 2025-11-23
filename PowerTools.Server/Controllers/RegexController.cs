@@ -214,12 +214,17 @@ public class RegexController : ControllerBase
             var options = ConvertOptions(request.Options);
             var regex = new Regex(request.Pattern, options, RegexTimeout);
 
-            // Count replacements
-            var matches = regex.Matches(request.Input);
-            var replacementCount = matches.Count;
-
-            // Perform replacement
-            var result = regex.Replace(request.Input, request.Replacement ?? string.Empty);
+            // Perform replacement and count in a single pass
+            int replacementCount = 0;
+            string result = regex.Replace(
+                request.Input,
+                match =>
+                {
+                    replacementCount++;
+                    // Use match.Result to handle group references in the replacement string
+                    return match.Result(request.Replacement ?? string.Empty);
+                }
+            );
 
             var response = new RegexReplaceResponse
             {
