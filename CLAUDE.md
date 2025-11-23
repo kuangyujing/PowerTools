@@ -18,6 +18,12 @@ Each API is designed to:
 - Seamlessly integrate with Power Platform flows and apps
 - Fill gaps where Power Platform's low-code approach falls short
 
+## Language Guidelines
+
+- **English**: All code, code comments, and CLAUDE.md
+- **Japanese**: Documentation in `docs/` directory and `README.md`
+- **Communication**: Respond to the user in Japanese
+
 ## Commands
 
 ### Build
@@ -106,6 +112,10 @@ Development-ready configuration:
 | `ASPNETCORE_ENVIRONMENT` | Production | Runtime environment |
 | `ASPNETCORE_URLS` | http://+:8080 | Listening URL |
 | `Logging__LogLevel__Default` | Information | Default log level |
+
+## Deployment
+
+This repository is automatically deployed via [Railway](https://railway.app/). When changes are pushed to the main branch, Railway automatically builds the Docker image using the `Dockerfile` and deploys it to production.
 
 ## Architecture
 
