@@ -410,8 +410,8 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 | `ZipController` | ZIP圧縮/解凍 | 未実装 |
 | `RegexController` | 正規表現処理 | 実装済み |
 | `CsvController` | CSV解析 | 未実装 |
-| `BarcodeController` | QRコード/バーコード | 未実装 |
-| `ImageController` | 画像処理 | 未実装 |
+| `BarcodeController` | QRコード/バーコード | 実装済み |
+| `ImageController` | 画像処理 | 実装済み |
 | `PdfController` | PDF処理 | 未実装 |
 | `CryptoController` | 暗号化/ハッシュ | 未実装 |
 | `DataConvertController` | データ変換 | 未実装 |
@@ -439,3 +439,4 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 |------|------|
 | 2024-11-23 | 初版作成 |
 | 2025-11-23 | RegexController 実装完了 |
+| 2025-11-23 | BarcodeController 実装完了（QRコード/バーコード生成、Data URI対応） |
