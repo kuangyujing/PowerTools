@@ -358,7 +358,6 @@ public class BarcodeController : ControllerBase
                 {
                     // Find the run length of black pixels
                     int startX = x;
-                    x++;
                     while (x < width && pixels[rowOffset + x].Red < 128)
                     {
                         x++;
