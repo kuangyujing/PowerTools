@@ -18,6 +18,12 @@ Each API is designed to:
 - Seamlessly integrate with Power Platform flows and apps
 - Fill gaps where Power Platform's low-code approach falls short
 
+## Language Guidelines
+
+- **English**: All code, code comments, and CLAUDE.md
+- **Japanese**: Documentation in `docs/` directory and `README.md`
+- **Communication**: Respond to the user in Japanese
+
 ## Commands
 
 ### Build
@@ -64,65 +70,52 @@ dotnet clean
 dotnet restore
 ```
 
-## NuGet パッケージのローカルキャッシュ
-
-### 背景
-
-Claude Code Web 環境では、プロキシ経由で Microsoft の CDN にアクセスできないため、通常の `dotnet restore` コマンドで NuGet パッケージをダウンロードできません。この問題を回避するため、パッケージをローカルにキャッシュしてリポジトリに含めています。
-
-### キャッシュの作成方法
-
-ローカル開発環境（プロキシ制限のない環境）で以下のコマンドを実行し、パッケージをキャッシュします：
-
+### Docker
 ```bash
-# パッケージを ./packages ディレクトリにキャッシュ
-dotnet restore --packages ./packages
+# Build Docker image
+docker build -t powertools:latest .
+
+# Run container
+docker run -d -p 8080:8080 --name powertools-server powertools:latest
+
+# Using docker-compose
+docker-compose up -d      # Start in background
+docker-compose down       # Stop and remove
+docker-compose logs -f    # View logs
 ```
 
-このコマンドにより、ソリューションが依存するすべての NuGet パッケージが `./packages` ディレクトリにダウンロードされます。
+## Container Support
 
-### キャッシュの利用方法
+### Dockerfile
+Multi-stage build optimized for production:
+- **Stage 1 (build)**: Uses `mcr.microsoft.com/dotnet/sdk:8.0` to restore and build
+- **Stage 2 (publish)**: Creates release artifacts
+- **Stage 3 (final)**: Uses `mcr.microsoft.com/dotnet/aspnet:8.0` runtime image
 
-キャッシュされたパッケージを使用するには、以下の環境変数を設定してからリストアを実行します：
+Security features:
+- Runs as non-root user (`appuser`)
+- Minimal runtime image with only necessary dependencies
+- Health check endpoint at `/api/health`
 
-```bash
-# 環境変数を設定
-export NUGET_PACKAGES=./packages
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
+### docker-compose.yml
+Development-ready configuration:
+- **Port**: 8080 (host) -> 8080 (container)
+- **Environment**: Development mode with configurable logging
+- **Volumes**: `./logs:/app/logs` for log persistence
+- **Health check**: Automatic container health monitoring
+- **Network**: Isolated bridge network (`powertools-network`)
+- **Restart policy**: `unless-stopped`
 
-# オフラインモードでリストア（ネットワークアクセスなし）
-dotnet restore --source ./packages --no-http-cache
-```
+### Environment Variables
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ASPNETCORE_ENVIRONMENT` | Production | Runtime environment |
+| `ASPNETCORE_URLS` | http://+:8080 | Listening URL |
+| `Logging__LogLevel__Default` | Information | Default log level |
 
-### SessionStart Hook による自動設定
+## Deployment
 
-`.claude/session-start.sh` が Claude Code セッション開始時に自動実行され、上記の設定を行います。これにより、Claude Code Web 環境でも自動的にローカルキャッシュからパッケージがリストアされます。
-
-### 新しいパッケージの追加時
-
-新しい NuGet パッケージを追加した場合は、ローカル開発環境で以下の手順を実行してください：
-
-1. 通常通りパッケージを追加：
-   ```bash
-   dotnet add package <パッケージ名>
-   ```
-
-2. キャッシュを更新：
-   ```bash
-   dotnet restore --packages ./packages
-   ```
-
-3. `./packages` ディレクトリの変更をコミット
-
-### ディレクトリ構成
-
-```
-PowerTools/
-├── packages/           # NuGet パッケージのローカルキャッシュ
-├── .claude/
-│   └── session-start.sh  # SessionStart Hook（自動設定スクリプト）
-└── ...
-```
+This repository is automatically deployed via [Railway](https://railway.app/). When changes are pushed to the main branch, Railway automatically builds the Docker image using the `Dockerfile` and deploys it to production.
 
 ## Architecture
 
