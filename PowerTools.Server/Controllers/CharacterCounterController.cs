@@ -14,7 +14,7 @@ public class CharacterCounterController : ControllerBase
 {
     private readonly ILogger<CharacterCounterController> _logger;
 
-    // Maximum input string length (1MB)
+    // Maximum input string length (1 million characters)
     private const int MaxInputLength = 1024 * 1024;
 
     public CharacterCounterController(ILogger<CharacterCounterController> logger)
