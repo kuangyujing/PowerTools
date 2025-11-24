@@ -41,7 +41,7 @@ public class CharacterCountResponse
     public int DigitCount { get; set; }
 
     /// <summary>
-    /// Count of space characters (half-width space)
+    /// Count of half-width space characters
     /// </summary>
     public int SpaceCount { get; set; }
 
