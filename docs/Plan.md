@@ -70,9 +70,9 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 | 日時処理 | タイムゾーン変換 | 過去のDST変更に非対応 | `DateTimeController` | 未実装 |
 | 日時処理 | 日付フォーマット | ISO 8601形式必須 | `DateTimeController` | 未実装 |
 | 日時処理 | 和暦変換 | サポートなし | `DateTimeController` | 未実装 |
-| 一時ストレージ | ファイルアップロード | Custom Connectorで大容量ファイル転送が困難 | `StorageController` | 未実装 |
-| 一時ストレージ | ファイル取得 | フロー間でのファイル共有が困難 | `StorageController` | 未実装 |
-| 一時ストレージ | ファイル削除 | 一時ファイルの自動クリーンアップなし | `StorageController` | 未実装 |
+| 一時ストレージ | ファイルアップロード | Custom Connectorで大容量ファイル転送が困難 | `StorageController` | **実装済み** |
+| 一時ストレージ | ファイル取得 | フロー間でのファイル共有が困難 | `StorageController` | **実装済み** |
+| 一時ストレージ | ファイル削除 | 一時ファイルの自動クリーンアップなし | `StorageController` | **実装済み** |
 | その他 | 非同期ジョブ実行 | タイムアウト制限（5秒〜数分） | `JobsController` | 未実装 |
 | その他 | バッチデータ処理 | ループ処理で制限超過しやすい | `BatchController` | 未実装 |
 | その他 | 配列操作 | Canvas Appでのソート負荷が高い、集計が複雑 | `ArrayController` | 未実装 |
@@ -244,3 +244,4 @@ PowerToolsは、Custom Connector経由で利用できるSwiss Army Knife（万�
 | 2025-11-23 | BarcodeController 実装完了 |
 | 2025-11-24 | ImageController, CharacterCounterController 実装完了 |
 | 2025-11-24 | 機能一覧と機能詳細に構造を再編成 |
+| 2025-11-25 | StorageController 実装完了 |
