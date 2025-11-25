@@ -6,6 +6,8 @@
 
 Microsoft Power Platformのための軽量APIツールキット
 
+![architecture](assets/architecture.drawio.png)
+
 ## プロジェクトの目的
 
 Power Platformは、ローコード開発において優れたプラットフォームです。迅速なアプリケーション開発を可能にし、ビジネスユーザーでも手軽にソリューションを構築できます。
