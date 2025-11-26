@@ -711,4 +711,218 @@ public class RegexControllerTests
     }
 
     #endregion
+
+    #region Input Validation Tests
+
+    [Fact]
+    public void IsMatch_InputExceedsMaxLength_ReturnsBadRequest()
+    {
+        // Arrange - Create a string longer than 1MB (1024 * 1024 characters)
+        var longString = new string('a', 1024 * 1024 + 1);
+        var request = new RegexIsMatchRequest
+        {
+            Input = longString,
+            Pattern = @"test"
+        };
+
+        // Act
+        var result = _controller.IsMatch(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Match_InputExceedsMaxLength_ReturnsBadRequest()
+    {
+        // Arrange - Create a string longer than 1MB
+        var longString = new string('a', 1024 * 1024 + 1);
+        var request = new RegexMatchRequest
+        {
+            Input = longString,
+            Pattern = @"test"
+        };
+
+        // Act
+        var result = _controller.Match(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Matches_InputExceedsMaxLength_ReturnsBadRequest()
+    {
+        // Arrange - Create a string longer than 1MB
+        var longString = new string('a', 1024 * 1024 + 1);
+        var request = new RegexMatchRequest
+        {
+            Input = longString,
+            Pattern = @"test"
+        };
+
+        // Act
+        var result = _controller.Matches(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Replace_InputExceedsMaxLength_ReturnsBadRequest()
+    {
+        // Arrange - Create a string longer than 1MB
+        var longString = new string('a', 1024 * 1024 + 1);
+        var request = new RegexReplaceRequest
+        {
+            Input = longString,
+            Pattern = @"test",
+            Replacement = "TEST"
+        };
+
+        // Act
+        var result = _controller.Replace(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Split_InputExceedsMaxLength_ReturnsBadRequest()
+    {
+        // Arrange - Create a string longer than 1MB
+        var longString = new string('a', 1024 * 1024 + 1);
+        var request = new RegexSplitRequest
+        {
+            Input = longString,
+            Pattern = @","
+        };
+
+        // Act
+        var result = _controller.Split(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void IsMatch_NullInput_ReturnsBadRequest()
+    {
+        // Arrange
+        var request = new RegexIsMatchRequest
+        {
+            Input = null!,
+            Pattern = @"test"
+        };
+
+        // Act
+        var result = _controller.IsMatch(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    #endregion
+
+    #region ReDoS Protection Tests
+
+    [Fact]
+    public void IsMatch_ComplexPatternWithTimeout_ReturnsBadRequest()
+    {
+        // Arrange - Pattern that could cause catastrophic backtracking
+        var request = new RegexIsMatchRequest
+        {
+            Input = new string('a', 50) + "b",  // String designed to trigger backtracking
+            Pattern = @"(a+)+$"  // Vulnerable pattern
+        };
+
+        // Act
+        var result = _controller.IsMatch(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+        // Should timeout and return error message about timeout
+    }
+
+    [Fact]
+    public void Match_ComplexPatternWithTimeout_ReturnsBadRequest()
+    {
+        // Arrange - Pattern that could cause catastrophic backtracking
+        var request = new RegexMatchRequest
+        {
+            Input = new string('a', 50) + "b",
+            Pattern = @"(a+)+$"  // Vulnerable pattern
+        };
+
+        // Act
+        var result = _controller.Match(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Matches_ComplexPatternWithTimeout_ReturnsBadRequest()
+    {
+        // Arrange - Pattern that could cause catastrophic backtracking
+        var request = new RegexMatchRequest
+        {
+            Input = new string('a', 50) + "b",
+            Pattern = @"(a+)+$"  // Vulnerable pattern
+        };
+
+        // Act
+        var result = _controller.Matches(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Replace_ComplexPatternWithTimeout_ReturnsBadRequest()
+    {
+        // Arrange - Pattern that could cause catastrophic backtracking
+        var request = new RegexReplaceRequest
+        {
+            Input = new string('a', 50) + "b",
+            Pattern = @"(a+)+$",  // Vulnerable pattern
+            Replacement = "X"
+        };
+
+        // Act
+        var result = _controller.Replace(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    [Fact]
+    public void Split_ComplexPatternWithTimeout_ReturnsBadRequest()
+    {
+        // Arrange - Pattern that could cause catastrophic backtracking
+        var request = new RegexSplitRequest
+        {
+            Input = new string('a', 50) + "b",
+            Pattern = @"(a+)+$"  // Vulnerable pattern
+        };
+
+        // Act
+        var result = _controller.Split(request) as BadRequestObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+    }
+
+    #endregion
 }
