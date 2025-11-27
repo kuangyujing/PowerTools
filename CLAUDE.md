@@ -38,6 +38,7 @@ PowerTools is a .NET 8 ASP.NET Core Web API - a **Swiss Army knife for Power Pla
 | `/api/regex` | POST `/ismatch`, `/match`, `/matches`, `/replace`, `/split` | Regex operations (ReDoS protected) |
 | `/api/charactercounter` | POST `/count` | Character type counting (JP support) |
 | `/api/encodingconverter` | POST `/convert`, GET `/encodings` | File encoding conversion |
+| `/api/storage` | POST `/upload`, `/get`, `/delete` | Temporary file storage with expiration |
 
 ## Coding Conventions
 
